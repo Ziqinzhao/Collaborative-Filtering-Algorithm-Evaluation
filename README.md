@@ -4,7 +4,7 @@
 
 Term: Spring 2020
 
-+ Team #
++ Team # 5
 + Projec title: Lorem ipsum dolor sit amet
 + Team members
 	+ team member 1
