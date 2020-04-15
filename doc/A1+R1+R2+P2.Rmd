@@ -1,0 +1,34 @@
+---
+title: "A1+R1+R2+P2"
+author: "Ziqin Zhao"
+date: "4/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Project 4 --- Part I (A1+R1+R2+P2)
+
+Algorithm : Stochastic Gradient Descent (A1)
+
+Regularization : Penalty of Magnitudes (R1) Bias and Intercepts (R2) 
+
+Postprocessing : SVD with KNN (P2)
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+data <- read.csv("../data/ml-latest-small/ratings.csv")
+set.seed(0)
+test_idx <- sample(1:nrow(data), round(nrow(data)/5, 0))
+train_idx <- setdiff(1:nrow(data), test_idx)
+data_train <- data[train_idx,]
+data_test <- data[test_idx,]
+```
+
+```{r}
+
+```
+
