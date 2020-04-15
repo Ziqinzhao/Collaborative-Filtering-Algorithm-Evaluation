@@ -16,6 +16,7 @@ Regularization : Penalty of Magnitudes (R1) Bias and Intercepts (R2)
 
 Postprocessing : SVD with KNN (P2)
 
+### Step 1 Load Data and Train-test Split
 ```{r}
 library(dplyr)
 library(tidyr)
@@ -27,6 +28,43 @@ train_idx <- setdiff(1:nrow(data), test_idx)
 data_train <- data[train_idx,]
 data_test <- data[test_idx,]
 ```
+
+###Step 2 Matrix Factorization
+#### Step 2.1 Algorithm and Regularization
+```{r}
+U <- length(unique(data[1:5000,]$userId))
+I <- length(unique(data[1:5000,]$movieId))
+source("../lib/Matrix_Factorization.R")
+```
+
+#### Step 2.2 Parameter Tuning
+
+# Plot our tunning parameters for A1+R1+R2 (only 5000 rows)
+```{r}
+source("../lib/cross_validation_A1+R1+R2.R")
+source("../lib/Matrix_Factorization_A1+R1+R2.R")
+
+f_list <- seq(10, 20, 10)
+l_list <- seq(-2, -1, 1)
+f_l <- expand.grid(f_list, l_list)
+
+result_summary_r12 <- array(NA, dim = c(nrow(f_l), 10, 4)) 
+run_time <- system.time(for(i in 1:nrow(f_l)){
+    par <- paste("f = ", f_l[i,1], ", lambda = ", 10^f_l[i,2])
+    cat(par, "\n")
+    current_result <- cv.function.r12(data[1:5000,], K = 5, f = f_l[i,1], lambda = 10^f_l[i,2])
+    result_summary_r12[,,i] <- matrix(unlist(current_result), ncol = 10, byrow = T) 
+    print(result_summary_r12)
+})
+
+save(result_summary_r12, file = "../output/rmseR12.Rdata")
+```
+```{r}
+rmse <- data.frame(rbind(t(result_summary_r12[1,,]), t(result_summary_r12[2,,])), train_test = rep(c("Train", "Test"), each = 4), par = rep(paste("f = ", f_l[,1], ", lambda = ", 10^f_l[,2]), times = 2)) %>% gather("epoch", "RMSE", -train_test, -par)
+rmse$epoch <- as.numeric(gsub("X", "", rmse$epoch))
+rmse %>% ggplot(aes(x = epoch, y = RMSE, col = train_test)) + geom_point() + facet_grid(~par)
+```
+### Step 3 Postprocessing: SVD with KNN
 
 ```{r}
 
