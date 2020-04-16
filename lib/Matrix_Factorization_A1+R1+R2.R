@@ -30,7 +30,6 @@ gradesc.r12 <- function(f = 10,
       
       i <- as.character(train[s,2])
       
-      
       mu <- mean(train$rating)
       b_i <- mean(train[train$movieId == i,]$rating)-mu
       b_u <- mean(train[train$userId == u,]$rating)-mu

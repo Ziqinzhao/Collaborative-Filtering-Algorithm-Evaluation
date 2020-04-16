@@ -1,6 +1,6 @@
 ---
 title: "A1+R1+R2+P2"
-author: "Ziqin Zhao"
+author: "Ziqin Zhao, Xinlin Zhang"
 date: "4/14/2020"
 output: html_document
 ---
@@ -22,6 +22,8 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 data <- read.csv("../data/ml-latest-small/ratings.csv")
+
+
 set.seed(0)
 test_idx <- sample(1:nrow(data), round(nrow(data)/5, 0))
 train_idx <- setdiff(1:nrow(data), test_idx)
@@ -34,39 +36,152 @@ data_test <- data[test_idx,]
 ```{r}
 U <- length(unique(data[1:5000,]$userId))
 I <- length(unique(data[1:5000,]$movieId))
-source("../lib/Matrix_Factorization.R")
+source("../lib/Matrix_Factorization.R")  
 ```
 
 #### Step 2.2 Parameter Tuning
 
 # Plot our tunning parameters for A1+R1+R2 (only 5000 rows)
 ```{r}
-source("../lib/cross_validation_A1+R1+R2.R")
+source("../lib/cross_validation_A1+R1+R2.R")  
 source("../lib/Matrix_Factorization_A1+R1+R2.R")
 
 f_list <- seq(10, 20, 10)
 l_list <- seq(-2, -1, 1)
 f_l <- expand.grid(f_list, l_list)
 
-result_summary_r12 <- array(NA, dim = c(nrow(f_l), 10, 4)) 
-run_time <- system.time(for(i in 1:nrow(f_l)){
-    par <- paste("f = ", f_l[i,1], ", lambda = ", 10^f_l[i,2])
-    cat(par, "\n")
-    current_result <- cv.function.r12(data[1:5000,], K = 5, f = f_l[i,1], lambda = 10^f_l[i,2])
-    result_summary_r12[,,i] <- matrix(unlist(current_result), ncol = 10, byrow = T) 
-    print(result_summary_r12)
-})
+# use cross validation to get the rmse
 
-save(result_summary_r12, file = "../output/rmseR12.Rdata")
+#result_summary_r12 <- array(NA, dim = c(nrow(f_l), 10, 4)) 
+#run_time <- system.time(for(i in 1:nrow(f_l)){
+#    par <- paste("f = ", f_l[i,1], ", lambda = ", 10^f_l[i,2])
+#    cat(par, "\n")
+#    current_result <- cv.function.r12(data[1:5000,], K = 5, f = f_l[i,1], lambda = 10^f_l[i,2])
+#    result_summary_r12[,,i] <- matrix(unlist(current_result), ncol = 10, byrow = T) 
+#    print(result_summary_r12)
+#})
+
+#save(result_summary_r12, file = "../output/rmseR12.Rdata")
 ```
+
 ```{r}
+load(file = "../output/rmseR12.Rdata") 
+
+
 rmse <- data.frame(rbind(t(result_summary_r12[1,,]), t(result_summary_r12[2,,])), train_test = rep(c("Train", "Test"), each = 4), par = rep(paste("f = ", f_l[,1], ", lambda = ", 10^f_l[,2]), times = 2)) %>% gather("epoch", "RMSE", -train_test, -par)
 rmse$epoch <- as.numeric(gsub("X", "", rmse$epoch))
 rmse %>% ggplot(aes(x = epoch, y = RMSE, col = train_test)) + geom_point() + facet_grid(~par)
 ```
+From the plot, we use parameters f = 10 and lambda=0.1 as our basic model.
+
 ### Step 3 Postprocessing: SVD with KNN
 
 ```{r}
+set.seed(0)
+
+#get the subset of train set and test set from the first 5000 data
+test_idx2 <- sample(1:5000, 5000/5, 0)
+train_idx2 <- setdiff(1:5000, test_idx2)
+data_train2 <- data[train_idx2,]
+data_test2 <- data[test_idx2,]
+
+
+# resultr12 <- gradesc.r12(f = 10, lambda = 0.1,lrate = 0.01, max.iter = 100, stopping.deriv = 0.01,data = data2, train = data_train2, test = data_test2)
+# save(resultr12, file = "../output/mat_facR12.RData")
+load(file = "../output/mat_facR12.RData")
+result<-resultr12
+train<-data_train2
+dim(result$p)
+dim(result$q)
+```
+
+```{r }
+#pairwise cosine distance  https://rdrr.io/cran/stylo/src/R/dist.cosine.R
+dist.cosine = function(x){  # x =  matrix q (movies:10*2427)
+
+    # test if the input dataset is acceptable
+    if(is.matrix(x) == FALSE & is.data.frame(x) == FALSE) {
+        stop("cannot apply a distance measure: wrong data format!")
+    }
+    # then, test whether the number of rows and cols is >1
+    if(length(x[1,]) < 2 | length(x[,1]) < 2) {
+        stop("at least 2 cols and 2 rows are needed to compute a distance!")
+    }
+    
+    # to get Centered Cosine dist (=Pearson Correlation Coeff.), one needs 
+    # to normalize the feature vectors by subtracting the vector means
+    # x = t( t(x) - colMeans(x) )
+    
+    # this computes cosine dissimilarity; to have similarity, 1- applies
+    y =as.dist( x %*% t(x) / (sqrt(rowSums(x^2) %*% t(rowSums(x^2)))) ) 
+    # alternative way of approaching it:
+    # crossprod(x, y) / sqrt(crossprod(x) * crossprod(y))
+
+    return(y) # y = 2427*2427
+} # max high, simliar high
 
 ```
+
+
+```{r}
+#"We use prediction by one nearest neighbor using similarity and refer to this method as ”SVD KNN”." ->K=1
+
+KNN.post<-function(result){
+    
+Q<-result$q #movie
+P<-result$p #user
+R<-t(P)%*%Q  # 32*2427
+
+User_all<-colnames(P) 
+Movie_all<-colnames(Q) 
+    
+U<-User_all%>%length()
+I<-Movie_all%>%length()
+
+
+distance_movie<-dist.cosine(t(Q))%>%as.matrix() #+1.2*diag(I) # T:need transpose
+rownames(distance_movie)<-Movie_all # 2427个
+colnames(distance_movie)<-Movie_all # 2427个
+
+for (u in 1:U){  # for every user (32 in total)                                          # only train dataset(since A/R part only contains train dataset)   
+    Movie_rated_by_u<-train[train$userId == u,]$movieId%>%unique%>%as.character()        # find trainset: movie rated by u(all movies if rated by user u)
+    Movie_NOTrated_by_u<-Movie_all[!Movie_all%in%Movie_rated_by_u]                       # all movies if not rated by user u
+    Rating_by_u<-R[u,]                                                                   # predict rating of u
+    
+    for (i in Movie_NOTrated_by_u){ # for every movie not rated by u                       
+        tmp<-distance_movie[i,Movie_rated_by_u]%>%which.max%>%names # find the highest dist.cosine score (which is the most simliarity)
+        Rating_by_u[i]<-Rating_by_u[tmp]                            # using the most simliarity movie which is rated by u to replace the score of the movie which is                                                                     # not rated by u
+    }
+    R[u,]<-Rating_by_u 
+
+}
+return(rating_knn=R) 
+}
+```
+
+
+```{r}
+KNN_Rating<-KNN.post(resultr12) # Rating after applying knn 
+Rating<-t(resultr12$p)%*%(resultr12$q)  # Rating without knn 
+#Knn_Rating: (32*2427: the number in the matrix is the score of ratings) 
+```
+
+
+```{r}
+RMSE <- function(rating, est_rating){
+  sqr_err <- function(obs){
+    sqr_error <- (obs[3] - est_rating[as.character(obs[1]), as.character(obs[2])])^2
+    return(sqr_error)
+  }
+  return(sqrt(mean(apply(rating, 1, sqr_err))))  
+}
+
+tibble(rating=c("Without KNN","With KNN"),
+       train=c(RMSE(data_train2,Rating),RMSE(data_train2,KNN_Rating)),     
+       test=c(RMSE(data_test2,Rating),RMSE(data_test2,KNN_Rating)))
+
+# train mse with knn is the same as mse without knn. 
+
+```
+
 

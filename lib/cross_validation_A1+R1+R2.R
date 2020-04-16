@@ -22,7 +22,7 @@ cv.function.r12 <- function(dat_train, K, f, lambda){
     
     result <- gradesc.r12(f = f, lambda =lambda,
                           lrate = 0.01, max.iter = 100, stopping.deriv = 0.01,
-                          data = dat_train, train = train.data, test = test.data)
+                          data = dat_train, train = train.data, test = test.data) 
     
     train_rmse[i,] <-  result$train_RMSE
     test_rmse[i,] <-   result$test_RMSE
