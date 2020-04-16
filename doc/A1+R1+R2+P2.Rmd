@@ -139,9 +139,9 @@ U<-User_all%>%length()
 I<-Movie_all%>%length()
 
 
-distance_movie<-dist.cosine(t(Q))%>%as.matrix() #+1.2*diag(I) # T:need transpose
-rownames(distance_movie)<-Movie_all # 2427个
-colnames(distance_movie)<-Movie_all # 2427个
+distance_movie<-dist.cosine(t(Q))%>%as.matrix() # T:need transpose
+rownames(distance_movie)<-Movie_all # 2427
+colnames(distance_movie)<-Movie_all # 2427
 
 for (u in 1:U){  # for every user (32 in total)                                          # only train dataset(since A/R part only contains train dataset)   
     Movie_rated_by_u<-train[train$userId == u,]$movieId%>%unique%>%as.character()        # find trainset: movie rated by u(all movies if rated by user u)
