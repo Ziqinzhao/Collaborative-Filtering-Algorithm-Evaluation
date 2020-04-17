@@ -118,7 +118,7 @@ dist.cosine = function(x){  # x =  matrix q (movies:10*2427)
     # crossprod(x, y) / sqrt(crossprod(x) * crossprod(y))
 
     return(y) # y = 2427*2427
-} # max high, simliar high
+} # max high, simliar high 
 
 ```
 
