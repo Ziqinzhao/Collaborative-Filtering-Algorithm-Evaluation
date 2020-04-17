@@ -44,7 +44,7 @@ source("../lib/Matrix_Factorization.R")
 #### Step 2.2 Parameter Tuning
 
 # Plot our tunning parameters for A1+R1+R2 (only 5000 rows)
-```{r}
+```{r, eval=FALSE}
 source("../lib/cross_validation_pmf.R")  
 source("../lib/Matrix_Factorization_pmf.R")
 
