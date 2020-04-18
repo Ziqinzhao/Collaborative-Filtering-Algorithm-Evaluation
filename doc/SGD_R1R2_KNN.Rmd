@@ -98,51 +98,11 @@ dim(result$q)
 
 
 ```{r}
-#"We use prediction by one nearest neighbor using similarity and refer to this method as ”SVD KNN”." ->K=1
-
-KNN.post <- function(result){
-    
-Q <- result$q #movie
-P <- result$p #user
-R <- t(P) %*% Q  # 32*2427
-
-User_all <- colnames(P) 
-Movie_all <- colnames(Q) 
-    
-U<-User_all %>% length()
-I<-Movie_all %>% length()
-
-
-distance_movie <- cosine(Q) %>% as.matrix() # use similarity matrix
-rownames(distance_movie) <- Movie_all # 2427
-colnames(distance_movie) <- Movie_all # 2427
-
-for (u in 1:U){  # for every user (32 in total)                                          # only train dataset(since A/R part only contains train dataset)  
-  # find trainset: movie rated by u(all movies if rated by user u)
-    Movie_rated_by_u <- train[train$userId == u,]$movieId%>%unique%>%as.character()       
-    # all movies if not rated by user u
-    Movie_NOTrated_by_u <- Movie_all[!Movie_all%in%Movie_rated_by_u]           # predict rating of u            
-    Rating_by_u<-R[u,]                                                                   
-    for (i in Movie_NOTrated_by_u){ # for every movie not rated by u                       
-        tmp <- distance_movie[i,Movie_rated_by_u] %>% which.max %>% names 
-        # find the highest dist.cosine score (which is the most simliarity)
-        Rating_by_u[i] <- Rating_by_u[tmp]                            
-        # using the most simliarity movie which is rated by u to replace the score of the movie which is not rated by u
-    }
-    R[u,] <- Rating_by_u 
-
-}
-return(rating_knn=R) 
-}
-```
-
-
-```{r}
-KNN_Rating <- KNN.post(resultr12) # Rating after applying knn 
-Rating <- t(resultr12$p)%*%(resultr12$q)  # Rating without knn 
+source("../lib/KNN.R")
+KNN_Rating <- KNN.post(data_train2, result) # Rating after applying KNN
+Rating <- t(result$p)%*%(result$q)  # Rating without knn 
 #Knn_Rating: (32*2427: the number in the matrix is the score of ratings) 
 ```
-
 
 ```{r}
 RMSE <- function(rating, est_rating){
