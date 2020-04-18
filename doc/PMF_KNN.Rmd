@@ -7,9 +7,9 @@ output: pdf_document
 
 # Project 4 --- Part II (A1 + P2)
 
-Algorithm : Gradient Descent With Probabilistic Assumption (A2)
+Algorithm : Stochastic Gradient Descent (A1) and Gradient Descent With Probabilistic Assumption (A2)
 
-Regularization : None
+Regularization : Penalty of Magnitudes (R1) Bias and Intercepts (R2)
 
 Postprocessing : SVD with KNN (P2)
 
