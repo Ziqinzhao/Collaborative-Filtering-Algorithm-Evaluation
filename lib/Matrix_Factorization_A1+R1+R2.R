@@ -30,6 +30,7 @@ gradesc.r12 <- function(f = 10,
       
       i <- as.character(train[s,2])
       
+      #Bias and Intercept
       mu <- mean(train$rating)
       b_i <- mean(train[train$movieId == i,]$rating)-mu
       b_u <- mean(train[train$userId == u,]$rating)-mu
@@ -39,6 +40,7 @@ gradesc.r12 <- function(f = 10,
       
       e_ui <- r_ui - t(q[,i]) %*% p[,u]-b_ui
       
+      # Penalty of Magnitudes
       grad_q <- e_ui %*% p[,u] - lambda * q[,i]
       
       if (all(abs(grad_q) > stopping.deriv, na.rm = T)){
