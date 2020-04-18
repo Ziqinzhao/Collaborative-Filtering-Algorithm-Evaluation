@@ -5,7 +5,7 @@ date: "4/15/2020"
 output: pdf_document
 ---
 
-# Project 4 --- Part I (A1 + P2)
+# Project 4 --- Part II (A1 + P2)
 
 Algorithm : Gradient Descent With Probabilistic Assumption (A2)
 
@@ -113,23 +113,3 @@ RMSE <- data.frame(epochs = seq(20, 100, 20), Training_MSE = result$train_RMSE, 
 RMSE %>% ggplot(aes(x = rep(seq(20, 100, 20),2), y = RMSE,col = train_or_test)) + geom_point() + scale_x_discrete(limits = seq(20, 100, 20)) + xlim(c(0, 100))+
 labs(x = "epochs",  title = "A2")
 ```
-
-```{r}
-#A2+P2
-
-```
-#Step 5: Conclusions
-Because we only use 5000 rows from original data to train our model, so our RMSE is a little bit higher than using the whole dataset.
-
-Test RMSE for A2 : 2.371270
-
-Test RMSE for A2 + P2 : 1.263551
-
-Test RMSE for A2 + R1R2 : 
-
-Test RMSE for A2 + R1R2 + P2 : 1.197289
-
-
-
-
-After comparing all the results, we find A2 + P2 has the best performance.
