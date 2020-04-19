@@ -5,16 +5,35 @@
 Term: Spring 2020
 
 + Team # 5
-+ Projec title: Lorem ipsum dolor sit amet
++ Project title: Collaborative Filtering Algorithm Evaluation
 + Team members
-	+ team member 1
-	+ team member 2
-	+ team member 3
-	+ team member 4
-	+ team member 5
-+ Project summary: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+	+ Ziqin Zhao
+	+ Xinlin Zhang
+	+ Jiadong Wu
+	+ Kaiqi Wang
+	+ Marko Konte
+
++ **Project summary:** 
+In this project, we created a recommendation model based on datasets of movie ratings. The goal for the team was to run two types of sets of algorithims, regularization, and postprocessing techniques and compare the performance of each in being able to predict on a test set. 
+
+	+ **Group 1**: 
 	
-**Contribution statement**: [default] All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
+	
+	+ ** Group 2**:
+
+**Contribution statement**: 
+
+*Ziqin Zhao:*
+
+*Xinlin Zhang:*
+
+*Jiadong Wu:*
+
+*Kaiqi Wang:*
+
+*Marko Konte:* Initial research into different algorithims to be used, testing algorithim implementation with different datasets. Created the README file, presentation, and presented the project. 
+
+
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
