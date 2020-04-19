@@ -37,7 +37,7 @@ In this project, we created a recommendation model based on datasets of movie ra
 		+ Pre Postprocessing: 1.6425
 		+ With Postprocessing: **1.4954**
 		
-	+ ** Method 2 Result**:
+	+ **Method 2 Result**:
 		+ Pre Postprocessing: 1.1786
 		+ With Postprocessing: **1.1744**
 
