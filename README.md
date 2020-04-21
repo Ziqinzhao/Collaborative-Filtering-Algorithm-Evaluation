@@ -14,10 +14,10 @@ Term: Spring 2020
 	+ Marko Konte
 
 + **Project summary:** 
-In this project, we created a recommendation model based on datasets of movie ratings. The goal for the team was to run two types of sets of algorithims, regularization, and postprocessing techniques and compare the performance of each in being able to predict on a test set. 
+In this project, we created a recommendation model based on datasets of movie ratings. The goal for the team was to run two types of sets of algorithms, regularization, and postprocessing techniques and compare the performance of each in being able to predict on a test set. 
 
 	+ **Method 1**: 
-		+ Algorithim: 
+		+ Algorithm: 
 			+ A1 = Stochastic Gradient Descent (SGD)
 		+ Regularization: 
 			+ R1 = Penalty of Magnitudes (PoM)
@@ -26,7 +26,7 @@ In this project, we created a recommendation model based on datasets of movie ra
 			+ P1 = SVD with KNN
 	
 	+ **Method 2**:
-		+ Algorithim:
+		+ Algorithm:
 			+ A2 = Gradient Descent with Probablisitic Assumptions (ALG)
 		+ Regularization:
 			+ None used for Method 2
@@ -41,19 +41,19 @@ In this project, we created a recommendation model based on datasets of movie ra
 		+ Pre Postprocessing: 1.1786
 		+ With Postprocessing: **1.1744**
 
-**Conclusion**: Our results found that the better performing model is Method 2, which utilized the GDP algorithim. It performed better in pre and post processing. Also, it was found that utilizing a postprocessing method with the KNN algorithm incrementally increases performance in all scenarios. However, due to the nature of how GDP is calculated, this type of algorithm could be of higher cold start issue risk, which Stochastic Gradient Descent is better suited for. Both approaches are very computationally intensive.
+**Conclusion**: Our results found that the better performing model is Method 2, which utilized the GDP algorithm. It performed better in pre and post processing. Also, it was found that utilizing a postprocessing method with the KNN algorithm incrementally increases performance in all scenarios. However, due to the nature of how GDP is calculated, this type of algorithm could be of higher cold start issue risk, which Stochastic Gradient Descent is better suited for. Both approaches are very computationally intensive.
 
 **Contribution statement**: 
 
-*Ziqin Zhao:*
+*Ziqin Zhao:* Created one algorithm (A1+R1+R2+P2) with Xinlin Zhang, modifying and testing the algorithm implementation with different datasets and finished the final algorithm and evaluated it. Created the Main.Rmd file of the project.
 
-*Xinlin Zhang:*
+*Xinlin Zhang:* Created one algorithm (A1+R1+R2+P2) with Ziqin Zhao, modifying and testing the algorithm implementation with different datasets and finished the final algorithm and evaluated it. 
 
-*Jiadong Wu:*
+*Jiadong Wu:* Created one algorithm (A2+P2) with Kaiqi Wang, modifying and testing the algorithm implementation with different datasets and finished the final algorithm and evaluated it.
 
-*Kaiqi Wang:*
+*Kaiqi Wang:* Created one algorithm (A2+P2) with Jiadong Wu, modifying and testing the algorithm implementation with different datasets and finished the final algorithm and evaluated it.
 
-*Marko Konte:* Initial research into different algorithims to be used, testing algorithim implementation with different datasets. Created the README file, presentation, and presented the project. 
+*Marko Konte:* Initial research into different algorithms to be used, testing algorithm implementation with different datasets. Created the README file, presentation, and presented the project. 
 
 
 
