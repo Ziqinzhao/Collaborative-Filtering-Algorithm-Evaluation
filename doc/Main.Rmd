@@ -66,6 +66,7 @@ l_list <- seq(-2, -1, 1)
 f_l <- expand.grid(f_list, l_list)
 ```
 
+Note: you can just use the result of this part (run for too much time).
 ```{r eval=FALSE}
 # use cross validation = 5 to get the rmse
 result_summary_r12 <- array(NA, dim = c(nrow(f_l), 10, 4)) 
@@ -102,6 +103,7 @@ lq_list <- c(1,1,0.5,0.5)
 f_l = cbind(f_list,lp_list,lq_list)
 ```
 
+Note: you can just use the result of this part (run for too much time).
 ```{r eval=FALSE}
 #cross-validation with K = 5
 result_summary <- array(NA, dim = c(nrow(f_l), 5, 4)) 
@@ -140,11 +142,12 @@ data_test2 <- data[test_idx2,]
 #### 3.1 Postprocessing for A1+R1+R2
 Get the result from best parameters in model 1(A1+R1+R2)
 
+Note: you can just use the result of this part (run for too much time). 
 ```{r eval=FALSE}
 resultr12 <- gradesc.r12(f = 10, lambda = 0.1,lrate = 0.01, max.iter = 100,
-                         stopping.deriv = 0.01,data = data2, 
+                         stopping.deriv = 0.01,data = data[1:5000,], 
                          train = data_train2, test =data_test2)
-save(resultr12, file = "../output/mat_facR12.RData")
+save(resultr12, file = "../output/mat_facR12.RData") 
 ```
 
 We have already wrote the function of SVD with KNN in the lib ('KNN.R'). Therefore, we just used it directly from lib.
@@ -175,6 +178,7 @@ A1_chart
 #### 3.1 Postprocessing for A2
 Get the result from best parameters for model 2(A2)
 
+Note: you can just use the result of this part  (run for too much time). 
 ```{r eval=FALSE}
 result <- gradesc_pmf(f = 10, sigma_p = 0.5,sigma_q = 0.5, lrate = 0.01, max.iter = 100, stopping.deriv = 0.01, data = data[1:5000,], train = data_train2, test = data_test2)
 save(result, file = "../output/mat_fac_pmf.RData")
