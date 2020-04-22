@@ -75,7 +75,8 @@ result_summary_r12 <- array(NA, dim = c(nrow(f_l), 10, 4))
 run_time <- system.time(for(i in 1:nrow(f_l)){
     par <- paste("f = ", f_l[i,1], ", lambda = ", 10^f_l[i,2])
     cat(par, "\n")
-    current_result <- cv.function.r12(data[1:5000,], K = 5, f = f_l[i,1], lambda = 10^f_l[i,2])
+    current_result <- cv.function.r12(data[1:5000,], K = 5, f = f_l[i,1], 
+                                      lambda = 10^f_l[i,2])
     result_summary_r12[,,i] <- matrix(unlist(current_result), ncol = 10, byrow = T) 
     print(result_summary_r12)
 })
@@ -87,9 +88,14 @@ Plot tuning parameters of A1+R1+R2
 ```{r}
 load(file = "../output/rmseR12.Rdata") 
 
-rmse <- data.frame(rbind(t(result_summary_r12[1,,]), t(result_summary_r12[2,,])), train_test = rep(c("Train", "Test"), each = 4), par = rep(paste("f = ", f_l[,1], ", lambda = ", 10^f_l[,2]), times = 2)) %>% gather("epoch", "RMSE", -train_test, -par)
+rmse <- data.frame(rbind(t(result_summary_r12[1,,]), t(result_summary_r12[2,,])), 
+                   train_test = rep(c("Train", "Test"), each = 4), 
+                   par = rep(paste("f = ", f_l[,1], ", lambda = ",10^f_l[,2]),times = 2))%>%
+  gather("epoch", "RMSE", -train_test, -par)
+
 rmse$epoch <- as.numeric(gsub("X", "", rmse$epoch))
-rmse %>% ggplot(aes(x = epoch, y = RMSE, col = train_test)) + geom_point() + facet_grid(~par)
+rmse %>% ggplot(aes(x = epoch, y = RMSE, col = train_test)) + 
+  geom_point() + facet_grid(~par)
 ```
 From the plot, we use parameters f = 10 and lambda=0.1 in this pair (A1+R1+R2)
 
@@ -112,7 +118,8 @@ result_summary <- array(NA, dim = c(nrow(f_l), 5, 4))
 run_time <- system.time(for(i in 1:nrow(f_l)){
     par <- paste("f = ", f_l[i,1], ", sigma_p = ", f_l[i,2],", sigma_q = ", f_l[i,3])
     cat(par, "\n")
-    current_result <- cv.function_pmf(data[1:5000,], K = 5, f = f_l[i,1],sigma_p=f_l[i,2],sigma_q= f_l[i,3],sigma = 0.1)
+    current_result <- cv.function_pmf(data[1:5000,], K = 5, f = f_l[i,1],
+                                      sigma_p=f_l[i,2],sigma_q= f_l[i,3],sigma = 0.1)
     result_summary[,,i] <- matrix(unlist(current_result), ncol = 5, byrow = T) 
     print(result_summary)
 })
@@ -123,9 +130,14 @@ Plot tuning parameters of A2
 ```{r}
 load(file = "../output/rmse_pmf.Rdata") 
 
-rmse_pmf <- data.frame(rbind(t(result_summary[1,,]), t(result_summary[2,,])), train_test = rep(c("Train", "Test"), each = 4), par = rep(paste("f = ", f_l[,1], ", sigma_p = ", f_l[,2], ", sigma_q = ", f_l[,3]), times = 2)) %>% gather("epoch", "RMSE", -train_test, -par)
+rmse_pmf <- data.frame(rbind(t(result_summary[1,,]), t(result_summary[2,,])), 
+                       train_test = rep(c("Train", "Test"), each = 4), 
+                       par = rep(paste("f = ", f_l[,1], ", sigma_p = ", f_l[,2], ", 
+                                       sigma_q = ",f_l[,3]), times = 2)) %>% 
+  gather("epoch", "RMSE", -train_test, -par)
 rmse_pmf$epoch <- as.numeric(gsub("X", "", rmse_pmf$epoch))
-rmse_pmf %>% ggplot(aes(x = epoch, y = RMSE, col = train_test)) + geom_point() + facet_grid(~par)
+rmse_pmf %>% ggplot(aes(x = epoch, y = RMSE, col = train_test)) + 
+  geom_point() + facet_grid(~par)
 ```
 From the plot, we use parameters f = 10 and sigma_p=0.5 sigma_q=0.5 in the model (A2)
 
@@ -182,7 +194,9 @@ Get the result from best parameters for model 2(A2)
 
 Note: you can just use the result of this part  (run for too much time). 
 ```{r eval=FALSE}
-result <- gradesc_pmf(f = 10, sigma_p = 0.5,sigma_q = 0.5, lrate = 0.01, max.iter = 100, stopping.deriv = 0.01, data = data[1:5000,], train = data_train2, test = data_test2)
+result <- gradesc_pmf(f = 10, sigma_p = 0.5,sigma_q = 0.5, lrate = 0.01, 
+                      max.iter = 100, stopping.deriv = 0.01, data = data[1:5000,], 
+                      train = data_train2, test = data_test2)
 save(result, file = "../output/mat_fac_pmf.RData")
 ```
 
